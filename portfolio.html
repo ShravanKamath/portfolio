@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shravan Kamath — ECE Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c0a;
+    --bg2: #0d1410;
+    --bg3: #111a14;
+    --green: #00ff6a;
+    --green-dim: #00cc55;
+    --green-ghost: rgba(0,255,106,0.08);
+    --green-border: rgba(0,255,106,0.2);
+    --amber: #ffa500;
+    --text: #c8d4c8;
+    --text-dim: #6a806a;
+    --text-bright: #e8f0e8;
+    --red: #ff3c3c;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Barlow Condensed', sans-serif;
+    --body: 'Barlow', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* SCANLINE */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* CIRCUIT GRID BG */
+  .grid-bg {
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(var(--green-border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--green-border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 48px;
+    background: rgba(8,12,10,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--green-border);
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--green);
+    letter-spacing: 3px;
+  }
+
+  .nav-logo span { color: var(--text-dim); }
+
+  .nav-links {
+    display: flex; gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    position: relative;
+  }
+
+  .nav-links a::before {
+    content: '> ';
+    color: var(--green);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--green); }
+  .nav-links a:hover::before { opacity: 1; }
+
+  .nav-status {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-content { max-width: 900px; }
+
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .hero-label::before {
+    content: '';
+    display: block;
+    width: 40px; height: 1px;
+    background: var(--green);
+  }
+
+  .hero-name {
+    font-family: var(--display);
+    font-size: clamp(72px, 12vw, 140px);
+    font-weight: 800;
+    line-height: 0.9;
+    color: var(--text-bright);
+    text-transform: uppercase;
+    letter-spacing: -2px;
+    margin-bottom: 8px;
+  }
+
+  .hero-name .highlight {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--green);
+  }
+
+  .hero-title {
+    font-family: var(--display);
+    font-size: clamp(20px, 3vw, 32px);
+    font-weight: 300;
+    color: var(--text-dim);
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  .hero-desc {
+    font-size: 15px;
+    color: var(--text);
+    max-width: 560px;
+    line-height: 1.8;
+    margin-bottom: 48px;
+    border-left: 2px solid var(--green-border);
+    padding-left: 20px;
+  }
+
+  .hero-cta {
+    display: flex; gap: 16px; flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: var(--green);
+    color: var(--bg);
+    padding: 14px 32px;
+    text-decoration: none;
+    font-weight: bold;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    background: var(--text-bright);
+    transform: translateY(-2px);
+  }
+
+  .btn-outline {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--green);
+    padding: 13px 32px;
+    text-decoration: none;
+    border: 1px solid var(--green-border);
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: all 0.2s;
+  }
+
+  .btn-outline:hover {
+    background: var(--green-ghost);
+    border-color: var(--green);
+  }
+
+  /* HERO SIDE STATS */
+  .hero-side {
+    position: absolute; right: 48px; top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 24px;
+  }
+
+  .stat-block {
+    text-align: right;
+    border-right: 2px solid var(--green-border);
+    padding-right: 20px;
+  }
+
+  .stat-num {
+    font-family: var(--display);
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--green);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* TERMINAL LINE */
+  .terminal-line {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 60px;
+    display: flex; align-items: center; gap: 0;
+  }
+
+  .terminal-line .prompt { color: var(--green); }
+
+  .cursor {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--green);
+    margin-left: 2px;
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+  }
+
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* SECTIONS */
+  section {
+    padding: 100px 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-header {
+    display: flex; align-items: center; gap: 24px;
+    margin-bottom: 60px;
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 2px;
+  }
+
+  .section-title {
+    font-family: var(--display);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 700;
+    color: var(--text-bright);
+    text-transform: uppercase;
+    letter-spacing: -1px;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--green-border), transparent);
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  .about-text p {
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  .about-text p strong { color: var(--green); font-weight: 500; }
+
+  .spec-table {
+    background: var(--bg2);
+    border: 1px solid var(--green-border);
+    padding: 32px;
+  }
+
+  .spec-row {
+    display: flex;
+    border-bottom: 1px solid rgba(0,255,106,0.06);
+    padding: 12px 0;
+  }
+
+  .spec-row:last-child { border-bottom: none; }
+
+  .spec-key {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    width: 140px;
+    flex-shrink: 0;
+  }
+
+  .spec-val {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-bright);
+  }
+
+  .spec-val .green { color: var(--green); }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .skill-card {
+    background: var(--bg2);
+    padding: 28px;
+    border: 1px solid transparent;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skill-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 3px; height: 0;
+    background: var(--green);
+    transition: height 0.3s;
+  }
+
+  .skill-card:hover {
+    border-color: var(--green-border);
+    background: var(--bg3);
+    transform: translateY(-4px);
+  }
+
+  .skill-card:hover::before { height: 100%; }
+
+  .skill-icon {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+
+  .skill-name {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-bright);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .skill-tags {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    padding: 4px 8px;
+    border: 1px solid rgba(0,255,106,0.1);
+    text-transform: uppercase;
+  }
+
+  /* PROJECTS */
+  .projects-list {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+
+  .project-item {
+    display: grid;
+    grid-template-columns: 80px 1fr 200px;
+    align-items: center;
+    gap: 32px;
+    padding: 28px 32px;
+    background: var(--bg2);
+    border: 1px solid transparent;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .project-item:hover {
+    background: var(--bg3);
+    border-color: var(--green-border);
+    transform: translateX(8px);
+  }
+
+  .project-num {
+    font-family: var(--display);
+    font-size: 48px;
+    font-weight: 800;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--text-dim);
+    line-height: 1;
+  }
+
+  .project-item:hover .project-num {
+    -webkit-text-stroke-color: var(--green);
+  }
+
+  .project-title {
+    font-family: var(--display);
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text-bright);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .project-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .project-tech {
+    display: flex; flex-direction: column; gap: 4px; align-items: flex-end;
+  }
+
+  .tech-pill {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green);
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border: 1px solid var(--green-border);
+    text-transform: uppercase;
+  }
+
+  /* EXPERIENCE */
+  .exp-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 4px;
+  }
+
+  .exp-item {
+    display: contents;
+  }
+
+  .exp-left {
+    background: var(--bg2);
+    padding: 28px;
+    border: 1px solid transparent;
+    border-right: none;
+  }
+
+  .exp-right {
+    background: var(--bg2);
+    padding: 28px;
+    border: 1px solid transparent;
+    border-left: 2px solid var(--green-border);
+    margin-bottom: 2px;
+  }
+
+  .exp-company {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+
+  .exp-period {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+  }
+
+  .exp-role {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-bright);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .exp-bullets {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+
+  .exp-bullets li {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .exp-bullets li::before {
+    content: '▸';
+    position: absolute; left: 0;
+    color: var(--green);
+    font-size: 10px;
+    top: 3px;
+  }
+
+  /* ACHIEVEMENTS */
+  .ach-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+  }
+
+  .ach-item {
+    background: var(--bg2);
+    padding: 32px;
+    border: 1px solid transparent;
+    display: flex; gap: 24px;
+    align-items: flex-start;
+    transition: all 0.3s;
+  }
+
+  .ach-item:hover {
+    border-color: var(--green-border);
+    background: var(--bg3);
+  }
+
+  .ach-icon {
+    font-family: var(--mono);
+    font-size: 28px;
+    line-height: 1;
+    color: var(--green);
+    flex-shrink: 0;
+  }
+
+  .ach-title {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-bright);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .ach-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* CONTACT */
+  .contact-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .contact-text .big {
+    font-family: var(--display);
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 800;
+    color: var(--text-bright);
+    text-transform: uppercase;
+    line-height: 0.95;
+    margin-bottom: 24px;
+  }
+
+  .contact-text .big .hollow {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--green);
+  }
+
+  .contact-text p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.8;
+    max-width: 400px;
+  }
+
+  .contact-links {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+
+  .contact-link {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 24px;
+    background: var(--bg2);
+    border: 1px solid transparent;
+    text-decoration: none;
+    transition: all 0.3s;
+    group: true;
+  }
+
+  .contact-link:hover {
+    border-color: var(--green-border);
+    background: var(--bg3);
+    transform: translateX(8px);
+  }
+
+  .contact-link-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .contact-link-val {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-bright);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .contact-link:hover .contact-link-val { color: var(--green); }
+
+  .contact-arrow {
+    font-family: var(--mono);
+    color: var(--text-dim);
+    font-size: 20px;
+    transition: all 0.3s;
+  }
+
+  .contact-link:hover .contact-arrow {
+    color: var(--green);
+    transform: translateX(4px);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 32px 48px;
+    border-top: 1px solid var(--green-border);
+    display: flex; justify-content: space-between; align-items: center;
+    position: relative; z-index: 1;
+  }
+
+  .footer-text {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+  }
+
+  .footer-text span { color: var(--green); }
+
+  /* SECTION DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green-border), transparent);
+    margin: 0 48px;
+    position: relative; z-index: 1;
+  }
+
+  /* ANIMATIONS */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* SCROLL INDICATOR */
+  .scroll-ind {
+    position: absolute; bottom: 40px; left: 48px;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+  }
+
+  .scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(180deg, var(--green), transparent);
+    animation: scrollDown 2s infinite;
+  }
+
+  .scroll-text {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+  }
+
+  @keyframes scrollDown {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* CORNER DECORATION */
+  .corner-deco {
+    position: absolute;
+    width: 40px; height: 40px;
+    pointer-events: none;
+  }
+
+  .corner-deco.tl { top: 16px; left: 16px; border-top: 1px solid var(--green); border-left: 1px solid var(--green); }
+  .corner-deco.tr { top: 16px; right: 16px; border-top: 1px solid var(--green); border-right: 1px solid var(--green); }
+  .corner-deco.bl { bottom: 16px; left: 16px; border-bottom: 1px solid var(--green); border-left: 1px solid var(--green); }
+  .corner-deco.br { bottom: 16px; right: 16px; border-bottom: 1px solid var(--green); border-right: 1px solid var(--green); }
+
+  @media (max-width: 900px) {
+    nav { padding: 14px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 60px; }
+    .hero-side { display: none; }
+    section { padding: 60px 24px; }
+    .about-grid, .contact-wrapper { grid-template-columns: 1fr; gap: 32px; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .project-item { grid-template-columns: 60px 1fr; }
+    .project-tech { display: none; }
+    .ach-grid { grid-template-columns: 1fr; }
+    .exp-grid { grid-template-columns: 1fr; }
+    .exp-left, .exp-right { border: 1px solid var(--green-border); margin-bottom: 2px; }
+    footer { flex-direction: column; gap: 8px; text-align: center; }
+    .divider { margin: 0 24px; }
+    .scroll-ind { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">SK<span>://</span>PORTFOLIO</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-status">
+    <div class="status-dot"></div>
+    AVAILABLE FOR HIRE
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="corner-deco tl"></div>
+  <div class="corner-deco tr"></div>
+  <div class="corner-deco bl"></div>
+  <div class="corner-deco br"></div>
+
+  <div class="hero-content">
+    <div class="hero-label">ECE Engineer · India · 2025</div>
+    <div class="hero-name">
+      SHRAVAN<br>
+      <span class="highlight">KAMATH</span>
+      <span class="highlight">M</span>
+    </div>
+    <div class="hero-title">Embedded · Power Electronics · VLSI </div>
+    <p class="hero-desc">
+      Final-year ECE student with hands-on expertise in embedded firmware,hardware-software integration. Passionate about defense technology, IoT systems, and pushing silicon to its limits.
+    </p>
+    <div class="hero-cta">
+      <a href="#contact" class="btn-primary">INITIATE CONTACT</a>
+      <a href="#projects" class="btn-outline">VIEW PROJECTS</a>
+    </div>
+    <div class="terminal-line">
+      <span class="prompt">shravan@ece:~$ </span>
+      <span id="typed-text"></span><span class="cursor"></span>
+    </div>
+  </div>
+
+  <div class="hero-side">
+    <div class="stat-block">
+      <div class="stat-num">8.6</div>
+      <div class="stat-label">CGPA</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">5+</div>
+      <div class="stat-label">Projects</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Hackathons</div>
+    </div>
+  </div>
+
+  <div class="scroll-ind">
+    <div class="scroll-line"></div>
+    <div class="scroll-text">SCROLL</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header fade-in">
+    <span class="section-num">01 //</span>
+    <h2 class="section-title">PROFILE</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text fade-in">
+      <p>
+        Engineering systems at the intersection of <strong>silicon and software</strong> — I design, build, and debug hardware-level solutions from bare-metal firmware to schematic capture. Currently completing my B.E. in Electronics and Communication Engineering.
+      </p>
+      <p>
+        My work spans <strong>I3C sensor hubs</strong> on NXP Cortex-M33 platforms, <strong>KiCad PCB design</strong> for power converters, VLSI circuit analysis in Verilog, and IoT-integrated defense systems. I bring field-level thinking to every schematic.
+      </p>
+      <p>
+        Beyond tech — I've served as <strong>ECE Department President</strong>, competed in Smart India Hackathon, and led multi-disciplinary team projects bridging firmware, hardware, and RF communications.
+      </p>
+    </div>
+    <div class="spec-table fade-in">
+      <div class="spec-row">
+        <span class="spec-key">STATUS</span>
+        <span class="spec-val"><span class="green">● ACTIVE</span> — Final Year</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">DEGREE</span>
+        <span class="spec-val">B.E. ECE — 8.6 CGPA</span>
+      </div>
+      
+      <div class="spec-row">
+        <span class="spec-key">LOCATION</span>
+        <span class="spec-val">Bangalore, India</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">INTERESTS</span>
+        <span class="spec-val"> Embedded systems· Defense · Aerospace · VLSI</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header fade-in">
+    <span class="section-num">02 //</span>
+    <h2 class="section-title">CAPABILITIES</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card fade-in">
+      <div class="skill-icon">[EMB]</div>
+      <div class="skill-name">Embedded Systems</div>
+      <div class="skill-tags">
+        <span class="tag">ARM Cortex-M33</span>
+        <span class="tag">NXP MCX</span>
+        <span class="tag">STM32</span>
+        <span class="tag">I3C/I2C/SPI</span>
+        <span class="tag">Bare-Metal</span>
+        <span class="tag">MCUXpresso</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in" style="transition-delay:0.1s">
+      <div class="skill-icon">[HDL]</div>
+      <div class="skill-name">VLSI / HDL</div>
+      <div class="skill-tags">
+        <span class="tag">Verilog</span>
+        <span class="tag">FPGA</span>
+        <span class="tag">RTL Design</span>
+        <span class="tag">Synthesis</span>
+        <span class="tag">Simulation</span>
+        <span class="tag">Xilinx</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in" style="transition-delay:0.2s">
+      <div class="skill-icon">[PCB]</div>
+      <div class="skill-name">Hardware Design</div>
+      <div class="skill-tags">
+        <span class="tag">KiCad</span>
+        <span class="tag">Schematics</span>
+        <span class="tag">PCB Layout</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in" style="transition-delay:0.3s">
+      <div class="skill-icon">[PWR]</div>
+      <div class="skill-name">Power Electronics</div>
+      <div class="skill-tags">
+        <span class="tag">PFC Boost</span>
+        <span class="tag">SMPS</span>
+        <span class="tag">AC/DC</span>
+        <span class="tag">HVDC</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in" style="transition-delay:0.4s">
+      <div class="skill-icon">[IOT]</div>
+      <div class="skill-name">IoT & RF</div>
+      <div class="skill-tags">
+        <span class="tag">RFID</span>
+        <span class="tag">Bluetooth</span>
+        <span class="tag">Sensor Fusion</span>
+        <span class="tag">Wireless communication</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in" style="transition-delay:0.5s">
+      <div class="skill-icon">[DEV]</div>
+      <div class="skill-name">Software & Tools</div>
+      <div class="skill-tags">
+        <span class="tag">C / C++</span>
+        <span class="tag">Python</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header fade-in">
+    <span class="section-num">03 //</span>
+    <h2 class="section-title">PROJECTS</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="projects-list">
+
+    <div class="project-item fade-in" style="transition-delay:0.2s">
+      <div class="project-num">01</div>
+      <div>
+        <div class="project-title">Wireless Stethoscope</div>
+        <div class="project-desc">STM32H750VB-based wireless acoustic medical device using Knowles MEMS microphone for high-fidelity heart sound capture with BM64 Bluetooth transmission. Full KiCad PCB designed and fabricated.</div>
+      </div>
+      <div class="project-tech">
+        <span class="tech-pill">STM32</span>
+        <span class="tech-pill">BT Audio</span>
+        <span class="tech-pill">MEMS</span>
+      </div>
+    </div>
+
+    <div class="project-item fade-in">
+      <div class="project-num">02</div>
+      <div>
+        <div class="project-title">I3C Sensor Hub</div>
+        <div class="project-desc">Bare-metal I3C driver on NXP FRDM-MCXA156 (Cortex-M33), reading real-time temperature from P3T1755DP with IBI interrupt support and HD44780 LCD output in 4-bit mode. Full PORT/clock mux configuration from scratch.</div>
+      </div>
+      <div class="project-tech">
+        <span class="tech-pill">NXP MCX</span>
+        <span class="tech-pill">I3C</span>
+        <span class="tech-pill">C</span>
+        <span class="tech-pill">LCD</span>
+      </div>
+    </div>
+
+    <div class="project-item fade-in" style="transition-delay:0.1s">
+      <div class="project-num">03</div>
+      <div>
+        <div class="project-title">IntelliFort — Smart Military Infra</div>
+        <div class="project-desc">IEEE-published paper on IoT/RFID-based smart military infrastructure system integrating real-time access control, perimeter intelligence, and automated alerting for defense installations.</div>
+      </div>
+      <div class="project-tech">
+        <span class="tech-pill">RFID</span>
+        <span class="tech-pill">IoT</span>
+        <span class="tech-pill">PCB</span>
+      </div>
+    </div>
+
+    <div class="project-item fade-in">
+      <div class="project-num">04</div>
+      <div>
+        <div class="project-title">I3C Sensor Hub</div>
+        <div class="project-desc">Bare-metal I3C driver on NXP FRDM-MCXA156 (Cortex-M33), reading real-time temperature from P3T1755DP with IBI interrupt support and HD44780 LCD output in 4-bit mode. Full PORT/clock mux configuration from scratch.</div>
+      </div>
+      <div class="project-tech">
+        <span class="tech-pill">NXP MCX</span>
+        <span class="tech-pill">I3C</span>
+        <span class="tech-pill">C</span>
+        <span class="tech-pill">LCD</span>
+      </div>
+    </div>
+
+
+
+    <div class="project-item fade-in" style="transition-delay:0.4s">
+      <div class="project-num">06</div>
+      <div>
+        <div class="project-title">Landmine Detection Robot</div>
+        <div class="project-desc">Autonomous ground vehicle for demining operations integrating metal detection arrays with GPS-tagged hazard mapping. Team project bridging mechanical, RF, and embedded domains for defense applications.</div>
+      </div>
+      <div class="project-tech">
+        <span class="tech-pill">Robotics</span>
+        <span class="tech-pill">GPS</span>
+        <span class="tech-pill">Defense</span>
+        <span class="tech-pill">RF</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-header fade-in">
+    <span class="section-num">04 //</span>
+    <h2 class="section-title">EXPERIENCE</h2>
+    <div class="section-line"></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:2px;">
+
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:2px;" class="fade-in">
+      <div class="exp-left">
+        <div class="exp-company">WPG Electronics</div>
+        <div class="exp-period">2026 · INTERNSHIP</div>
+      </div>
+      <div class="exp-right">
+        <div class="exp-role">Field Application Engineer Intern</div>
+        <ul class="exp-bullets">
+          <li>Conducted transistor substitution analysis across alternate component manufacturers for BOM cost optimization</li>
+          <li>Reviewed and validated Bills of Materials for production-level hardware designs</li>
+          <li>Collaborated with FAE team on customer technical queries and component feasibility studies</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="section-header fade-in">
+    <span class="section-num">05 //</span>
+    <h2 class="section-title">ACHIEVEMENTS</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="ach-grid">
+    <div class="ach-item fade-in" style="transition-delay:0.1s">
+      <div class="ach-icon">⚡</div>
+      <div>
+        <div class="ach-title">Ideathon 2025 Winners</div>
+        <div class="ach-desc">Idea Airpulse: Wireless stethoscope got Funded INR 5 lakhs for prototype development </div>
+      </div>
+    </div>
+    <div class="ach-item fade-in">
+      <div class="ach-icon">🏆</div>
+      <div>
+        <div class="ach-title">Career Launchpad — 2nd Prize</div>
+        <div class="ach-desc">Inter-college technical competition. Recognised for applied problem-solving and engineering depth.</div>
+      </div>
+    </div>
+    <div class="ach-item fade-in" style="transition-delay:0.1s">
+      <div class="ach-icon">⚡</div>
+      <div>
+        <div class="ach-title">Smart India Hackathon — Shortlisted</div>
+        <div class="ach-desc">National-level government hackathon. Selected from thousands of college teams across India.</div>
+      </div>
+    </div>
+    <div class="ach-item fade-in" style="transition-delay:0.2s">
+      <div class="ach-icon">📡</div>
+      <div>
+        <div class="ach-title">IEEE SSH Hackathon</div>
+        <div class="ach-desc">Participated in IEEE Student-run Systems Hackathon, developing real-time hardware-software solutions.</div>
+      </div>
+    </div>
+    <div class="ach-item fade-in" style="transition-delay:0.3s">
+      <div class="ach-icon">🎖</div>
+      <div>
+        <div class="ach-title">ECE Department President</div>
+        <div class="ach-desc">Elected to lead the department's student body, coordinating technical and professional development activities.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header fade-in">
+    <span class="section-num">06 //</span>
+    <h2 class="section-title">CONTACT</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="contact-wrapper">
+    <div class="contact-text fade-in">
+      <div class="big">LET'S<br><span class="hollow">BUILD</span><br>SOMETHING.</div>
+      <p>Open to embedded systems, VLSI, FAE, and power electronics roles. Ready to contribute from day one — no ramp-up required.</p>
+    </div>
+    <div class="contact-links fade-in">
+      <a href="mailto:shravan.kamath@email.com" class="contact-link">
+        <div>
+          <div class="contact-link-label">EMAIL</div>
+          <div class="contact-link-val">shravan.kamath@email.com</div>
+        </div>
+        <div class="contact-arrow">→</div>
+      </a>
+      <a href="https://linkedin.com/in/shravan-kamath" class="contact-link" target="_blank">
+        <div>
+          <div class="contact-link-label">LINKEDIN</div>
+          <div class="contact-link-val">linkedin.com/in/shravan-kamath</div>
+        </div>
+        <div class="contact-arrow">→</div>
+      </a>
+      <a href="https://github.com/shravan-kamath" class="contact-link" target="_blank">
+        <div>
+          <div class="contact-link-label">GITHUB</div>
+          <div class="contact-link-val">github.com/shravan-kamath</div>
+        </div>
+        <div class="contact-arrow">→</div>
+      </a>
+      <a href="Shravan_Kamath_Resume.pdf" class="contact-link">
+        <div>
+          <div class="contact-link-label">RESUME</div>
+          <div class="contact-link-val">Download PDF</div>
+        </div>
+        <div class="contact-arrow">↓</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-text">
+    © 2025 <span>SHRAVAN KAMATH</span> · ECE ENGINEER · INDIA
+  </div>
+  <div class="footer-text">
+    <span>SHRAVAN@ECE:~$</span> _
+  </div>
+</footer>
+
+<script>
+  // Intersection Observer for fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Typed text effect
+  const lines = [
+    'grep -r "opportunities" ./2025',
+    'loaded: embedded_systems.ko',
+    'target: TI | NXP | BEL | Renesas',
+    'status: READY_TO_DEPLOY'
+  ];
+  let li = 0, ci = 0;
+  const el = document.getElementById('typed-text');
+
+  function type() {
+    if (ci < lines[li].length) {
+      el.textContent += lines[li][ci++];
+      setTimeout(type, 60);
+    } else {
+      setTimeout(erase, 2200);
+    }
+  }
+
+  function erase() {
+    if (el.textContent.length > 0) {
+      el.textContent = el.textContent.slice(0, -1);
+      setTimeout(erase, 30);
+    } else {
+      li = (li + 1) % lines.length;
+      ci = 0;
+      setTimeout(type, 500);
+    }
+  }
+
+  setTimeout(type, 1200);
+</script>
+
+</body>
+</html>
